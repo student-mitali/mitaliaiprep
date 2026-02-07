@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PrepPulse AI</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="navbar">
+    <h1>PrepPulse AI</h1>
+    <p>Smart Interview Readiness Analyzer</p>
+</div>
+
+
+<div class="container">
+
+<h2>Interview Assessment</h2>
+
+<form method="POST">
+
+    <!-- Links -->
+
+    <label>Resume Link</label>
+    <input type="url" name="resume_link" placeholder="Paste Google Drive / PDF link" required>
+
+    <label>GitHub / Project Link</label>
+    <input type="url" name="github_link" placeholder="Paste GitHub repository link" required>
+
+    <label>Your Technical Skills</label>
+    <textarea name="skills" placeholder="Example: Python, Flask, SQL, ML, React..." required></textarea>
+
+
+    <!-- Ratings -->
+
+    <label>Technical Skills (1–10)</label>
+    <input type="number" name="tech" min="1" max="10" required>
+
+    <label>Communication (1–10)</label>
+    <input type="number" name="comm" min="1" max="10" required>
+
+    <label>Confidence (1–10)</label>
+    <input type="number" name="conf" min="1" max="10" required>
+
+    <label>Resume Quality (1–10)</label>
+    <input type="number" name="resume_score" min="1" max="10" required>
+
+
+    <button type="submit">Analyze Readiness</button>
+
+</form>
+
+
+{% if score %}
+
+<div class="result">
+
+    <h3>Your Score: {{ score }}/100</h3>
+
+    <p><b>Level:</b> {{ level }}</p>
+    <p><b>Feedback:</b> {{ feedback }}</p>
+
+    <hr>
+
+    <h4>Profile Summary</h4>
+
+    <p><b>Resume:</b> <a href="{{ resume_link }}" target="_blank">{{ resume_link }}</a></p>
+
+    <p><b>GitHub:</b> <a href="{{ github_link }}" target="_blank">{{ github_link }}</a></p>
+
+    <p><b>Skills:</b> {{ skills }}</p>
+
+
+    <canvas id="chart"></canvas>
+
+</div>
+
+
+<script>
+
+const ctx = document.getElementById('chart');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ["Technical", "Communication", "Confidence", "Resume"],
+        datasets: [{
+            label: "Score (out of 10)",
+            data: [
+                {{ data["Technical"] }},
+                {{ data["Communication"] }},
+                {{ data["Confidence"] }},
+                {{ data["Resume"] }}
+            ],
+            backgroundColor: [
+                "#3b82f6",
+                "#22c55e",
+                "#facc15",
+                "#ec4899"
+            ]
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 10
+            }
+        }
+    }
+});
+
+</script>
+
+{% endif %}
+
+</div>
+
+
+<div class="footer">
+    Built for AI PrepPulse Hackathon • PrepPulse AI
+</div>
+
+</body>
+</html>
